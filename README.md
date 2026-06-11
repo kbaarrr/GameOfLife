@@ -74,4 +74,3 @@ npm install && npm test    # jsdom page/flow suite + real server integration tes
 ---
 
 History: this repo previously hosted a Game of Life experiment and the "Curio" kids-learning prototype — both live on in git history.
-subscription prototype (see git history), pivoted to Rihla after an
