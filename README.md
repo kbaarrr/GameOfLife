@@ -50,6 +50,20 @@ back to localStorage on static hosting or network failure, so no lead is
 ever lost. The journey catalog (EN + AR), program tiers, packages and
 evidence citations live in `assets/js/data.js`.
 
+## Going live, free
+
+1. **Site**: GitHub repo → Settings → Pages → Source: **GitHub Actions**.
+   The included workflow (`.github/workflows/pages.yml`) deploys on every
+   push — your site appears at `https://<user>.github.io/<repo>/`.
+2. **Leads to your email**: create a free form at [formspree.io](https://formspree.io)
+   (50 submissions/month free), copy the endpoint URL, and paste it into
+   `LEAD_ENDPOINT` at the top of `RihlaStore` in `assets/js/app.js`.
+   Every pilot request and booking then lands in your inbox.
+3. **Later, for ~$5/month** (Render, Railway, any small VPS): run
+   `node server.js` instead — your own lead database, the `/admin.html`
+   inbox, no submission limits. The same forms switch over automatically
+   when `LEAD_ENDPOINT` is left empty.
+
 ## Run & test
 
 ```bash

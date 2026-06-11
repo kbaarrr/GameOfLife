@@ -31,13 +31,19 @@ const RihlaStore = {
     return lead;
   },
 
-  // Deliver to the API when the site is served by server.js; fall back to
-  // localStorage on static hosting or network failure so no lead is lost.
+  // Free-tier hosting (e.g. GitHub Pages + Formspree): paste your Formspree
+  // endpoint here and every lead is emailed to you — no server needed.
+  // Example: LEAD_ENDPOINT = "https://formspree.io/f/your-form-id"
+  LEAD_ENDPOINT: "",
+
+  // Delivery order: Formspree endpoint if configured, else the server.js
+  // API, else localStorage — so no lead is ever lost on any hosting.
   submitLead(lead) {
     if (typeof fetch !== "function") return this.saveLead(lead);
-    fetch("/api/leads", {
+    const url = this.LEAD_ENDPOINT || "/api/leads";
+    fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify(lead),
     })
       .then((r) => {
@@ -109,8 +115,11 @@ const RihlaUI = {
 
 document.addEventListener("DOMContentLoaded", () => {
   RihlaUI.initNav();
-  // Installable app: register the service worker where supported.
+  // Installable app: register the service worker where supported. The path
+  // is computed relative to the site root so subpath hosting (e.g. GitHub
+  // Pages project sites) works; /ar/ pages sit one level down.
   if ("serviceWorker" in navigator && location.protocol !== "file:") {
-    navigator.serviceWorker.register("/sw.js").catch(() => {});
+    const swPath = location.pathname.includes("/ar/") ? "../sw.js" : "sw.js";
+    navigator.serviceWorker.register(swPath).catch(() => {});
   }
 });

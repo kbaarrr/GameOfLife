@@ -1,12 +1,17 @@
 {
-  "name": "Rihla — Experience Care",
+  "name": "Rihla \u2014 Experience Care",
   "short_name": "Rihla",
-  "description": "Journeys for those who cannot travel — facilitated immersive experiences at the bedside.",
-  "start_url": "/index.html",
+  "description": "Journeys for those who cannot travel \u2014 facilitated immersive experiences at the bedside.",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#FAF6EF",
   "theme_color": "#2E5E4E",
   "icons": [
-    { "src": "/assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+    {
+      "src": "assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
   ]
 }

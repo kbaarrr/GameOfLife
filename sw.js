@@ -1,8 +1,8 @@
 /* Rihla service worker — network-first with cache fallback, so the shell
    opens offline but content is never stale. */
 const CACHE = "rihla-v1";
-const SHELL = ["/", "/index.html", "/families.html", "/hospitals.html", "/experiences.html",
-  "/assets/css/styles.css", "/assets/js/data.js", "/assets/js/app.js", "/assets/icon.svg"];
+const SHELL = ["./", "index.html", "families.html", "hospitals.html", "experiences.html",
+  "assets/css/styles.css", "assets/js/data.js", "assets/js/app.js", "assets/icon.svg"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
@@ -13,7 +13,7 @@ self.addEventListener("activate", (e) => {
   ).then(() => self.clients.claim()));
 });
 self.addEventListener("fetch", (e) => {
-  if (e.request.method !== "GET" || new URL(e.request.url).pathname.startsWith("/api/")) return;
+  if (e.request.method !== "GET" || new URL(e.request.url).pathname.includes("/api/")) return;
   e.respondWith(
     fetch(e.request)
       .then((res) => {
@@ -21,6 +21,6 @@ self.addEventListener("fetch", (e) => {
         caches.open(CACHE).then((c) => c.put(e.request, copy));
         return res;
       })
-      .catch(() => caches.match(e.request).then((m) => m || caches.match("/index.html")))
+      .catch(() => caches.match(e.request).then((m) => m || caches.match("index.html")))
   );
 });
