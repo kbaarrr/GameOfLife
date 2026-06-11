@@ -34,7 +34,7 @@ const RihlaStore = {
   // Free-tier hosting (e.g. GitHub Pages + Formspree): paste your Formspree
   // endpoint here and every lead is emailed to you — no server needed.
   // Example: LEAD_ENDPOINT = "https://formspree.io/f/your-form-id"
-  LEAD_ENDPOINT: "",
+  LEAD_ENDPOINT: "https://formspree.io/f/xgobnvko",
 
   // Delivery order: Formspree endpoint if configured, else the server.js
   // API, else localStorage — so no lead is ever lost on any hosting.
