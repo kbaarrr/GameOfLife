@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lead Inbox — Rihla</title>
+  <meta name="robots" content="noindex" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="icon" href="assets/icon.svg" />
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav">
+    <a class="logo" href="index.html"><span class="dot"></span>Rihla <span class="ar">رحلة</span></a>
+    <div class="nav-cta"><span class="muted" style="font-size:.9rem;">Lead inbox</span></div>
+  </nav>
+</header>
+
+<main class="wrap" style="padding: 48px 24px 80px;">
+  <div class="section-head">
+    <span class="eyebrow">Internal</span>
+    <h1 style="font-size: clamp(1.8rem, 4vw, 2.6rem);">Pilot requests &amp; bookings</h1>
+    <p class="muted">Requires the site to be running via <code>server.js</code> and the admin token.</p>
+  </div>
+
+  <form class="form-card" id="tokenForm" style="max-width: 460px; margin-bottom: 28px;">
+    <div class="field"><label for="token">Admin token</label><input id="token" type="password" placeholder="rihla-dev (development default)" /></div>
+    <button class="btn btn-primary" type="submit">Load leads</button>
+  </form>
+
+  <div class="alert alert-error" id="adminAlert"></div>
+
+  <div id="leadList" class="dash-col" style="display: grid; gap: 16px;"></div>
+</main>
+
+<script src="assets/js/app.js"></script>
+<script>
+(function () {
+  const alertBox = document.getElementById("adminAlert");
+  const list = document.getElementById("leadList");
+  const tokenInput = document.getElementById("token");
+  // sessionStorage throws on opaque origins (e.g. file://) — degrade quietly.
+  const session = {
+    get(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } },
+    set(k, v) { try { sessionStorage.setItem(k, v); } catch (e) { /* ignore */ } },
+  };
+  tokenInput.value = session.get("rihla_admin_token") || "";
+
+  function esc(s) { return RihlaUI.esc(s); }
+
+  function render(leads) {
+    if (!leads.length) {
+      list.innerHTML = '<p class="muted">No leads yet — share the site and they\'ll appear here.</p>';
+      return;
+    }
+    list.innerHTML = leads.slice().reverse().map((l) => `
+      <div class="panel" style="padding: 22px;">
+        <div class="panel-head" style="margin-bottom: 8px;">
+          <h3 style="font-size: 1.1rem;">${l.type === "pilot" ? "🏥 Ward pilot request" : "🤲 Family booking"} — ${esc(l.name)}</h3>
+          <span class="muted" style="font-size:.82rem;">${new Date(l.at).toLocaleString()}</span>
+        </div>
+        <div class="meta-list">
+          ${Object.entries(l).filter(([k]) => !["id", "at", "type", "name"].includes(k) && l[k])
+            .map(([k, v]) => `<div class="row"><span class="lbl">${esc(k)}</span><span style="text-align:right; max-width: 70%;">${esc(v)}</span></div>`).join("")}
+        </div>
+      </div>`).join("");
+  }
+
+  document.getElementById("tokenForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    alertBox.classList.remove("show");
+    const token = tokenInput.value.trim();
+    session.set("rihla_admin_token", token);
+    try {
+      const r = await fetch("/api/leads", { headers: { "x-admin-token": token } });
+      if (r.status === 401) throw new Error("That token wasn't accepted.");
+      if (!r.ok) throw new Error("Server error (" + r.status + ").");
+      const data = await r.json();
+      // Merge any leads captured locally while offline/static-hosted.
+      const local = RihlaStore.leads();
+      render(data.leads.concat(local.map((l) => Object.assign({ note: "captured locally in this browser" }, l))));
+    } catch (err) {
+      alertBox.textContent = err.message + " Is the site running via server.js?";
+      alertBox.classList.add("show");
+    }
+  });
+})();
+</script>
+</body>
+</html>

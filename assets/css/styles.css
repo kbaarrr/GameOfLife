@@ -252,6 +252,20 @@ p  { margin: 0 0 1em; }
   font-weight: 400;
 }
 
+/* ---------- Arabic / RTL ---------- */
+:root[dir="rtl"] {
+  --font-display: "Amiri", "Noto Naskh Arabic", "Times New Roman", serif;
+  --font-body: "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+}
+:root[dir="rtl"] h1, :root[dir="rtl"] h2, :root[dir="rtl"] h3,
+:root[dir="rtl"] .display, :root[dir="rtl"] .eyebrow,
+:root[dir="rtl"] .tag, :root[dir="rtl"] .status-pill {
+  letter-spacing: 0;
+}
+:root[dir="rtl"] body { font-size: 17.5px; }
+:root[dir="rtl"] h1 { line-height: 1.35; }
+:root[dir="rtl"] h2, :root[dir="rtl"] h3 { line-height: 1.4; }
+
 /* Reverence / disclaimer notice */
 .notice-box {
   background: var(--sage-soft);

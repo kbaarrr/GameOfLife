@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rihla — Ward Pilot Proposal (one-pager)</title>
+<style>
+  /* Self-contained on purpose: this file is emailed and printed.
+     Print to PDF: A4 portrait, default margins off. */
+  :root {
+    --green: #2E5E4E; --green-deep: #1F463A; --gold: #A8853B;
+    --cream: #FAF6EF; --sand: #F1EADD; --linen: #E6DDCC;
+    --ink: #2A2520; --stone: #847A6C;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    background: #DDD6C8;
+    font-family: "Avenir Next", "Segoe UI", -apple-system, sans-serif;
+    color: var(--ink);
+    display: flex; justify-content: center;
+    padding: 24px 8px;
+  }
+  .page {
+    background: var(--cream);
+    width: 210mm; min-height: 296mm;
+    padding: 14mm 16mm;
+    box-shadow: 0 20px 60px -30px rgba(0,0,0,.45);
+    display: flex; flex-direction: column; gap: 7mm;
+  }
+  @media print {
+    body { background: none; padding: 0; }
+    .page { box-shadow: none; width: auto; min-height: auto; }
+    @page { size: A4 portrait; margin: 0; }
+  }
+  @media (max-width: 820px) { .page { width: 100%; min-height: auto; padding: 24px 20px; } .cols, .head { flex-direction: column; } }
+
+  h1, h2, .serif { font-family: Georgia, "Times New Roman", serif; font-weight: 500; }
+  .head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-family: Georgia, serif; font-size: 24px; }
+  .logo .dot { width: 13px; height: 13px; border-radius: 50%; background: var(--green); }
+  .logo .ar { color: var(--stone); font-size: 17px; }
+  .contact { text-align: right; font-size: 11.5px; color: var(--stone); line-height: 1.5; }
+
+  h1 { font-size: 27px; line-height: 1.2; }
+  h1 em { color: var(--green); }
+  .lede { font-size: 13px; color: #4A4239; line-height: 1.55; max-width: 60em; }
+
+  .eyebrow { font-size: 9.5px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--green); margin-bottom: 4px; }
+  .cols { display: flex; gap: 6mm; }
+  .col { flex: 1; }
+
+  .panel { background: #FFFDF8; border: 1px solid var(--linen); border-radius: 10px; padding: 12px 14px; height: 100%; }
+  .panel h2 { font-size: 14.5px; margin-bottom: 6px; }
+  .panel p, .panel li { font-size: 11.5px; line-height: 1.5; color: #4A4239; }
+  .panel ul { padding-left: 16px; display: grid; gap: 4px; }
+
+  .evidence { background: var(--green); color: var(--cream); border-radius: 10px; padding: 13px 16px; }
+  .evidence h2 { font-size: 14.5px; margin-bottom: 8px; color: var(--cream); }
+  .ev-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; }
+  .ev-grid div { font-size: 10.8px; line-height: 1.45; color: rgba(250,246,239,.92); }
+  .ev-grid strong { display: block; font-size: 12px; color: #fff; font-family: Georgia, serif; }
+  .ev-grid a { color: #D9C89A; text-decoration: none; font-size: 10px; }
+
+  .timeline { display: flex; gap: 8px; }
+  .step { flex: 1; background: var(--sand); border-radius: 9px; padding: 10px 11px; }
+  .step b { display: block; font-size: 11.5px; margin-bottom: 3px; }
+  .step span { font-size: 10.6px; color: #4A4239; line-height: 1.4; display: block; }
+  .step .wk { font-size: 9px; font-weight: 700; letter-spacing: .12em; color: var(--gold); text-transform: uppercase; }
+
+  .offer { display: flex; gap: 6mm; align-items: stretch; }
+  .offer .terms { flex: 1.5; }
+  .price-box {
+    flex: 1; background: #FFFDF8; border: 2px solid var(--green); border-radius: 10px;
+    padding: 13px 16px; text-align: center; display: flex; flex-direction: column; justify-content: center;
+  }
+  .price-box .big { font-family: Georgia, serif; font-size: 23px; color: var(--green-deep); }
+  .price-box .sub { font-size: 10.5px; color: var(--stone); margin-top: 3px; }
+
+  .foot { border-top: 1px solid var(--linen); padding-top: 8px; display: flex; justify-content: space-between; font-size: 9.8px; color: var(--stone); margin-top: auto; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="head">
+    <div>
+      <div class="logo"><span class="dot"></span>Rihla <span class="ar">رحلة</span></div>
+      <div style="font-size:11px; color:var(--stone); margin-top:2px;">Experience care · Journeys for those who cannot travel</div>
+    </div>
+    <div class="contact">
+      Ward Pilot Proposal · Prepared for Patient Experience leadership<br/>
+      salaam@rihla.care · rihla.care
+    </div>
+  </div>
+
+  <div>
+    <h1>Patient experience your <em>satisfaction scores can feel.</em></h1>
+    <p class="lede" style="margin-top:5px;">Rihla brings facilitated immersive journeys to the wards where patients spend their longest, most anxious hours — a last skydive over the Palm, the Haram at dawn, the village they grew up in. A trained facilitator runs every session at the bedside; the family shares it on a second screen. Evidence-based, infection-control compliant, and designed to move the patient-satisfaction indicators your leadership is measured on.</p>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      <div class="panel">
+        <span class="eyebrow">The problem</span>
+        <h2>Long hours, anxious patients, measured outcomes</h2>
+        <ul>
+          <li>Oncology, dialysis and paediatric patients sit through hundreds of repeat hours with little to look forward to.</li>
+          <li>Procedural anxiety drives distress, complaints and sedation use.</li>
+          <li>National programs now set explicit inpatient-satisfaction targets — and hospitality investments alone have stopped differentiating.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col">
+      <div class="panel">
+        <span class="eyebrow">The program</span>
+        <h2>Experience care, run as a service</h2>
+        <ul>
+          <li>Facilitated immersive sessions on the ward — never hardware dumped on busy staff.</li>
+          <li>Headsets owned, sanitised and replaced by Rihla; single-use hygiene covers; protocols agreed with infection control.</li>
+          <li>Journey library incl. sacred journeys (offered with religious guidance) and bespoke patient commissions.</li>
+          <li>Quarterly reporting mapped to your satisfaction KPIs.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="evidence">
+    <h2>The evidence — citations, not vibes</h2>
+    <div class="ev-grid">
+      <div><strong>944 children · 9 RCTs</strong>Meta-analysis: VR distraction yields statistically significant, clinically meaningful reductions in procedural pain and anxiety. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9804813/">PMC9804813</a></div>
+      <div><strong>Feasible on real wards</strong>Hospital study (ages 4–16): reduced anxiety, pain and stress; increased happiness; well tolerated. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9192964/">PMC9192964</a></div>
+      <div><strong>85.76% national satisfaction KPI</strong>Saudi Health Sector Transformation Program targets beneficiary satisfaction with the hospitalization experience. <a href="https://www.vision2030.gov.sa/en/explore/programs/health-sector-transformation-program">vision2030.gov.sa</a></div>
+      <div><strong>Standard care in leading hospices</strong>Major providers internationally already deliver VR experiences within emotional &amp; spiritual care. <a href="https://lazarus.vitas.com/care-services/therapy-emotional-and-spiritual-care/virtual-reality">VITAS Healthcare</a></div>
+    </div>
+  </div>
+
+  <div>
+    <span class="eyebrow">The pilot — 4 weeks, one ward</span>
+    <div class="timeline">
+      <div class="step"><span class="wk">Week 0</span><b>Scope</b><span>Ward, patient criteria &amp; infection-control protocols agreed with your clinical and PX teams.</span></div>
+      <div class="step"><span class="wk">Week 0</span><b>Baseline</b><span>Simple pre-pilot patient-reported experience measure, so the result means something.</span></div>
+      <div class="step"><span class="wk">Weeks 1–4</span><b>Sessions</b><span>One facilitated session day per week, run entirely by Rihla staff alongside yours.</span></div>
+      <div class="step"><span class="wk">Week 5</span><b>Report</b><span>Pre/post comparison, patient &amp; staff feedback, costed rollout proposal mapped to your KPIs.</span></div>
+    </div>
+  </div>
+
+  <div class="offer">
+    <div class="terms panel">
+      <span class="eyebrow">After the pilot</span>
+      <h2>Ward subscription</h2>
+      <p>From <b>$1,250 / ward / month</b> (billed locally in SAR or AED): 2 maintained headset kits, full journey library plus monthly additions, staff facilitator training, clinical-sensitivity protocols, quarterly KPI-mapped reporting, and sacred &amp; memory sessions available to your patients. All hardware remains Rihla property — maintained, sanitised and replaced by us.</p>
+    </div>
+    <div class="price-box">
+      <div class="big">Pilot: at cost</div>
+      <div class="sub">4 weeks · 1 ward · pre/post measurement<br/>No commitment beyond the pilot</div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span>Rihla Experience Care · © 2026 · Sacred journeys are comfort and preparation — never a substitute for pilgrimage.</span>
+    <span>Request a pilot: salaam@rihla.care</span>
+  </div>
+
+</div>
+</body>
+</html>

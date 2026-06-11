@@ -135,6 +135,57 @@ console.log("\n— families.html (booking form + religious framing) —");
   ok(leads.length === 2 && leads[1].type === "booking" && leads[1].journeys === "Makkah & the Haram", "booking lead persisted with prefilled journey");
 }
 
+console.log("\n— ar/index.html —");
+{
+  const { dom, errors } = await loadPage("ar/index.html");
+  ok(errors.length === 0, "no script errors " + (errors[0] || ""));
+  const d = dom.window.document;
+  ok(d.documentElement.getAttribute("dir") === "rtl", "page is RTL");
+  ok(d.querySelectorAll("#evidenceGrid .card").length === 4, "4 Arabic evidence cards rendered");
+  ok(d.body.textContent.includes("مكة والحرم"), "featured journeys render in Arabic");
+  ok(d.body.textContent.includes("لا بديلاً عن الحج أو العمرة"), "Arabic religious framing present");
+}
+
+console.log("\n— ar/families.html —");
+{
+  const { dom, errors } = await loadPage("ar/families.html", "?exp=makkah");
+  ok(errors.length === 0, "no script errors " + (errors[0] || ""));
+  const d = dom.window.document;
+  ok(d.body.textContent.includes("ليست") && d.body.textContent.includes("حجاً ولا عمرة"), "Arabic disclaimer present");
+  ok(d.querySelectorAll("#packageGrid .price-card").length === 3, "3 Arabic packages rendered");
+  ok(d.getElementById("bJourneys").value === "مكة والحرم", "?exp=makkah prefills Arabic journey name");
+
+  const form = d.getElementById("bookingForm");
+  d.getElementById("bName").value = "أم زايد";
+  d.getElementById("bEmail").value = "umzayd@example.com";
+  d.getElementById("bCity").value = "الشارقة";
+  form.dispatchEvent(new dom.window.Event("submit", { bubbles: true, cancelable: true }));
+  ok(d.getElementById("bookingConfirm").style.display === "block", "Arabic booking form submits");
+  const leads = JSON.parse(storage.get("rihla_leads"));
+  ok(leads[leads.length - 1].city === "الشارقة", "Arabic lead persisted");
+}
+
+console.log("\n— ar/experiences.html —");
+{
+  const { dom, errors } = await loadPage("ar/experiences.html");
+  ok(errors.length === 0, "no script errors " + (errors[0] || ""));
+  const d = dom.window.document;
+  ok(d.querySelectorAll("#expGrid .track-card").length === 15, "all 15 journeys render in Arabic");
+  const chips = [...d.querySelectorAll("#categoryBar .chip")];
+  chips.find((c) => c.textContent === "رحلات مقدسة").click();
+  ok(d.querySelectorAll("#expGrid .track-card").length === 3, "Arabic category filter -> 3 sacred journeys");
+}
+
+console.log("\n— deck.html & admin.html —");
+{
+  const deck = fs.readFileSync(path.join(ROOT, "deck.html"), "utf8");
+  ok(deck.includes("944 children · 9 RCTs") && deck.includes("85.76%"), "deck carries the evidence");
+  ok(deck.includes("$1,250 / ward / month"), "deck carries the offer");
+  const { dom, errors } = await loadPage("admin.html");
+  ok(errors.length === 0, "admin page loads without script errors " + (errors[0] || ""));
+  ok(dom.window.document.getElementById("tokenForm") !== null, "admin token form present");
+}
+
 console.log(failures === 0 ? "\nALL TESTS PASSED ✅" : `\n${failures} FAILURES ❌`);
 process.exit(failures === 0 ? 0 : 1);
 })();

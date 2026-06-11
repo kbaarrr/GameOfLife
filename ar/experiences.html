@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>مكتبة الرحلات — رحلة</title>
+  <meta name="description" content="تصفحوا مكتبة رحلات «رحلة» — المدن المقدسة، وعجائب العالم، والطبيعة الهادئة، ومغامرات قائمة الأمنيات، وأفلام الذكريات الخاصة — كلها تصل إلى جانب السرير." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+  <link rel="manifest" href="../manifest.json" />
+  <meta name="theme-color" content="#2E5E4E" />
+  <link rel="icon" href="../assets/icon.svg" />
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav">
+    <a class="logo" href="index.html"><span class="dot"></span>رحلة <span class="ar">Rihla</span></a>
+    <div class="nav-links" id="navLinks">
+      <a href="experiences.html">التجارب</a>
+      <a href="../hospitals.html">للمستشفيات</a>
+      <a href="families.html">للعائلات</a>
+      <a href="../experiences.html">English</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn btn-accent btn-sm" href="families.html#booking">احجز جلسة</a>
+      <button class="nav-toggle" aria-label="القائمة"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <section class="section" style="padding-bottom: 24px;">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">مكتبة الرحلات</span>
+        <h1 style="font-size: clamp(1.9rem, 4.6vw, 3rem);">إلى أين كانوا سيذهبون، لو استطاعوا؟</h1>
+        <p class="muted">كل رحلة يقدمها مرافق بجانب السرير وتُشارك مع العائلة على شاشة ثانية. رحلات جديدة تنضم إلى المكتبة كل شهر.</p>
+      </div>
+
+      <div class="filter-bar" id="categoryBar"></div>
+      <div class="filter-bar" style="margin-top: -18px;">
+        <input class="search-input" id="expSearch" type="search" placeholder="ابحث في الرحلات… مثلاً: مكة، سفاري، قفزة" />
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-bottom: 80px;">
+    <div class="wrap">
+      <div class="track-grid" id="expGrid"></div>
+      <p class="center muted" id="noResults" style="display:none; padding: 48px 0;">لا توجد رحلات مطابقة — جربوا إزالة أحد الفلاتر.</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: 0;">
+    <div class="wrap">
+      <div class="cta-band">
+        <h2>وجدتم الرحلة التي سيختارونها؟</h2>
+        <p class="muted">سيخطط المرافق الجلسة معكم — في المنزل، أو المستشفى، أو دار الرعاية.</p>
+        <a class="btn btn-accent" href="families.html#booking" style="margin-top: 10px;">احجز جلسة</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-bottom" style="border-top: none; padding-top: 0;">
+      <span>© ٢٠٢٦ رحلة لرعاية التجربة.</span>
+      <span><a href="index.html" style="color:inherit;">الرئيسية</a> · <a href="families.html" style="color:inherit;">للعائلات</a> · <a href="../experiences.html" style="color:inherit;">English</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/app.js"></script>
+<script>
+(function () {
+  const fromUrl = RihlaUI.qs("cat");
+  let activeCategory = RIHLA.categories.includes(fromUrl) ? fromUrl : "All";
+  let query = "";
+
+  const catBar = document.getElementById("categoryBar");
+  const grid = document.getElementById("expGrid");
+  const noResults = document.getElementById("noResults");
+
+  function chip(label, isActive, onClick) {
+    const b = document.createElement("button");
+    b.className = "chip" + (isActive ? " active" : "");
+    b.textContent = label;
+    b.addEventListener("click", onClick);
+    return b;
+  }
+
+  function renderFilters() {
+    catBar.innerHTML = "";
+    catBar.appendChild(chip("الكل", activeCategory === "All", () => { activeCategory = "All"; renderAll(); }));
+    RIHLA.categories.forEach((c) =>
+      catBar.appendChild(chip(RIHLA.ar.categories[c], c === activeCategory, () => { activeCategory = c; renderAll(); }))
+    );
+  }
+
+  function renderGrid() {
+    const q = query.trim();
+    const matches = RIHLA.experiences.filter((x) => {
+      if (activeCategory !== "All" && x.category !== activeCategory) return false;
+      if (q) {
+        const a = RIHLA.ar.experiences[x.id];
+        const hay = a.name + " " + a.blurb + " " + RIHLA.ar.categories[x.category] + " " + x.name.toLowerCase();
+        if (!hay.includes(q) && !hay.includes(q.toLowerCase())) return false;
+      }
+      return true;
+    });
+
+    noResults.style.display = matches.length ? "none" : "block";
+    grid.innerHTML = matches.map((x) => {
+      const a = RIHLA.ar.experiences[x.id];
+      return `
+      <article class="track-card">
+        <div class="track-banner ${x.tone === "gold" ? "sage" : ""}">${x.emoji}</div>
+        <div class="track-body">
+          <div class="track-meta">
+            <span class="tag clay">${RihlaUI.esc(RIHLA.ar.categories[x.category])}</span>
+            <span class="tag">${RihlaUI.esc(RIHLA.ar.durations[x.duration] || x.duration)}</span>
+          </div>
+          <h3>${RihlaUI.esc(a.name)}</h3>
+          <p>${RihlaUI.esc(a.blurb)}</p>
+          <div style="margin-top:10px;">
+            <div class="track-meta">
+              ${x.settings.map((s) => `<span class="tag">${RihlaUI.esc(RIHLA.ar.settings[s])}</span>`).join("")}
+            </div>
+          </div>
+          <div class="track-foot"><a class="btn btn-ghost btn-sm" href="families.html?exp=${x.id}#booking">اطلب هذه الرحلة</a></div>
+        </div>
+      </article>`;
+    }).join("");
+  }
+
+  function renderAll() { renderFilters(); renderGrid(); }
+
+  document.getElementById("expSearch").addEventListener("input", (e) => {
+    query = e.target.value;
+    renderGrid();
+  });
+
+  renderAll();
+})();
+</script>
+</body>
+</html>

@@ -20,9 +20,11 @@ links on the hospitals page.
 
 ## The site
 
-Zero-dependency static site — deploy the repo root to any static host
-(GitHub Pages, Netlify, S3). Mobile-first, responsive, warm-neutral
-palm-green & gold design system.
+Zero-runtime-dependency site with an optional zero-dependency Node server.
+Deploy the repo root to any static host (lead forms fall back to
+localStorage) or run `server.js` to capture leads for real. Mobile-first,
+responsive, installable as a PWA, warm-neutral palm-green & gold design
+system. English + full Arabic (RTL) for the family-facing pages.
 
 | Page | Purpose |
 |---|---|
@@ -30,17 +32,29 @@ palm-green & gold design system.
 | `hospitals.html` | B2B: why wards buy, cited evidence, program tiers, pilot timeline, pilot-request form |
 | `families.html` | Sacred & memory service, religious framing, packages, booking form |
 | `experiences.html` | Journey library with category filters and search |
+| `ar/…` | Arabic (RTL) landing, families and experiences pages (hospitals stays English — GCC procurement norm) |
+| `deck.html` | Self-contained, print-to-PDF one-page ward-pilot proposal for hospital PX directors |
+| `admin.html` | Internal lead inbox (requires `server.js` + admin token) |
 
-Lead capture (pilot requests, family bookings) persists in `localStorage`
-behind the `RihlaStore` facade (`assets/js/app.js`); replacing its methods
-with API calls is the entire backend migration. The journey catalog, program
-tiers, packages and evidence citations live in `assets/js/data.js`.
+## Server & lead capture
+
+`server.js` (Node ≥ 18, no dependencies) serves the site plus:
+
+- `POST /api/leads` — pilot requests & family bookings → `data/leads.json`
+- `GET /api/leads` — list leads; requires `x-admin-token` (set
+  `RIHLA_ADMIN_TOKEN`; dev default `rihla-dev`)
+- `GET /api/health` — liveness
+
+The browser facade (`RihlaStore.submitLead`) posts to the API and falls
+back to localStorage on static hosting or network failure, so no lead is
+ever lost. The journey catalog (EN + AR), program tiers, packages and
+evidence citations live in `assets/js/data.js`.
 
 ## Run & test
 
 ```bash
-npm start                  # serve locally at http://localhost:3000
-npm install && npm test    # jsdom functional suite: pages, filters, both lead forms
+npm start                  # node server.js → http://localhost:3000 (admin: /admin.html)
+npm install && npm test    # jsdom page/flow suite + real server integration tests
 ```
 
 ---

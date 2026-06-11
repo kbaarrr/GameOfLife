@@ -30,6 +30,22 @@ const RihlaStore = {
     this._write(this.KEY_LEADS, leads);
     return lead;
   },
+
+  // Deliver to the API when the site is served by server.js; fall back to
+  // localStorage on static hosting or network failure so no lead is lost.
+  submitLead(lead) {
+    if (typeof fetch !== "function") return this.saveLead(lead);
+    fetch("/api/leads", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(lead),
+    })
+      .then((r) => {
+        if (!r.ok) throw new Error("api " + r.status);
+      })
+      .catch(() => this.saveLead(lead));
+    return lead;
+  },
 };
 
 const RihlaUI = {
@@ -82,7 +98,7 @@ const RihlaUI = {
         if (el.name) data[el.name] = el.value.trim();
       });
       if (!ok) return;
-      RihlaStore.saveLead(data);
+      RihlaStore.submitLead(data);
       form.style.display = "none";
       const conf = document.getElementById(confirmId);
       if (conf) conf.style.display = "block";
@@ -91,4 +107,10 @@ const RihlaUI = {
   },
 };
 
-document.addEventListener("DOMContentLoaded", () => RihlaUI.initNav());
+document.addEventListener("DOMContentLoaded", () => {
+  RihlaUI.initNav();
+  // Installable app: register the service worker where supported.
+  if ("serviceWorker" in navigator && location.protocol !== "file:") {
+    navigator.serviceWorker.register("/sw.js").catch(() => {});
+  }
+});

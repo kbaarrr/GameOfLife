@@ -2,10 +2,10 @@
   "name": "rihla",
   "version": "1.0.0",
   "private": true,
-  "description": "Rihla — experience care for the Gulf: facilitated immersive journeys to the bedside. Static site, zero runtime dependencies.",
+  "description": "Rihla \u2014 experience care for the Gulf: facilitated immersive journeys to the bedside. Static site, zero runtime dependencies.",
   "scripts": {
-    "start": "npx serve . -l 3000",
-    "test": "node tests/smoke.test.js"
+    "start": "node server.js",
+    "test": "node tests/smoke.test.js && node tests/server.test.js"
   },
   "devDependencies": {
     "jsdom": "^25.0.0"
