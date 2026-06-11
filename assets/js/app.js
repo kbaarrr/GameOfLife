@@ -1,12 +1,10 @@
-/* Curio — shared client runtime.
-   Accounts persist in localStorage behind a small store facade so the whole
-   app talks to one interface; replacing these methods with fetch() calls is
-   the entire backend migration. */
+/* Rihla — shared client runtime.
+   Leads (pilot requests, family bookings) persist in localStorage behind a
+   small store facade; replacing these methods with fetch() calls is the
+   entire backend migration. */
 
-const CurioStore = {
-  KEY_USERS: "curio_users",
-  KEY_SESSION: "curio_session",
-  KEY_DRAFT: "curio_signup_draft",
+const RihlaStore = {
+  KEY_LEADS: "rihla_leads",
 
   _read(key, fallback) {
     try {
@@ -20,74 +18,21 @@ const CurioStore = {
     localStorage.setItem(key, JSON.stringify(val));
   },
 
-  users() {
-    return this._read(this.KEY_USERS, {});
+  leads() {
+    return this._read(this.KEY_LEADS, []);
   },
 
-  saveUser(user) {
-    const users = this.users();
-    users[user.email.toLowerCase()] = user;
-    this._write(this.KEY_USERS, users);
-  },
-
-  findUser(email) {
-    return this.users()[(email || "").toLowerCase()] || null;
-  },
-
-  // NOTE: client-side demo hashing only — real auth lives server-side.
-  hash(str) {
-    let h = 5381;
-    for (let i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0;
-    return "h" + (h >>> 0).toString(36);
-  },
-
-  login(email, password) {
-    const user = this.findUser(email);
-    if (!user || user.passHash !== this.hash(password)) return null;
-    this._write(this.KEY_SESSION, { email: user.email.toLowerCase(), at: Date.now() });
-    return user;
-  },
-
-  logout() {
-    localStorage.removeItem(this.KEY_SESSION);
-  },
-
-  currentUser() {
-    const sess = this._read(this.KEY_SESSION, null);
-    if (!sess) return null;
-    return this.findUser(sess.email);
-  },
-
-  startSession(email) {
-    this._write(this.KEY_SESSION, { email: email.toLowerCase(), at: Date.now() });
-  },
-
-  draft() {
-    return this._read(this.KEY_DRAFT, {});
-  },
-  saveDraft(d) {
-    this._write(this.KEY_DRAFT, d);
-  },
-  clearDraft() {
-    localStorage.removeItem(this.KEY_DRAFT);
+  saveLead(lead) {
+    const leads = this.leads();
+    lead.id = "L" + Date.now().toString(36);
+    lead.at = new Date().toISOString();
+    leads.push(lead);
+    this._write(this.KEY_LEADS, leads);
+    return lead;
   },
 };
 
-const CurioUI = {
-  money(n) {
-    return "$" + n.toLocaleString("en-US");
-  },
-
-  fmtDate(d) {
-    return new Date(d).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" });
-  },
-
-  addMonths(date, m) {
-    const d = new Date(date);
-    d.setMonth(d.getMonth() + m);
-    return d;
-  },
-
+const RihlaUI = {
   esc(s) {
     const div = document.createElement("div");
     div.textContent = s == null ? "" : String(s);
@@ -96,21 +41,6 @@ const CurioUI = {
 
   qs(name) {
     return new URLSearchParams(location.search).get(name);
-  },
-
-  // Session window status relative to local time right now.
-  sessionStatus(sess) {
-    const now = new Date();
-    const h = now.getHours() + now.getMinutes() / 60;
-    if (h >= sess.start && h < sess.end) return "live";
-    if (h < sess.start) return "upcoming";
-    return "ended";
-  },
-
-  fmtHour(h) {
-    const ampm = h < 12 ? "am" : "pm";
-    const hr = h % 12 === 0 ? 12 : h % 12;
-    return hr + ":00" + ampm;
   },
 
   initNav() {
@@ -129,52 +59,36 @@ const CurioUI = {
         })
       );
     }
-
-    // Swap the "Sign in" CTA for "My Studio" when logged in.
-    const user = CurioStore.currentUser();
-    const authLink = document.querySelector("[data-auth-link]");
-    if (user && authLink) {
-      authLink.textContent = "My Studio";
-      authLink.setAttribute("href", "dashboard.html");
-    }
   },
 
-  requireAuth() {
-    const user = CurioStore.currentUser();
-    if (!user) {
-      location.href = "login.html?next=dashboard";
-      return null;
-    }
-    return user;
-  },
-
-  // Build a demo member so visitors can explore the dashboard instantly.
-  demoUser() {
-    const email = "demo@curio.world";
-    let user = CurioStore.findUser(email);
-    if (!user) {
-      const signupAt = Date.now() - 9 * 24 * 3600 * 1000; // joined 9 days ago
-      user = {
-        firstName: "Amira",
-        lastName: "Haddad",
-        email,
-        passHash: CurioStore.hash("curio-demo"),
-        plan: "annual",
-        tracks: ["arabic-gcc", "kitchen-chemistry", "young-masters"],
-        children: [
-          { name: "Zayd", age: "6–8" },
-          { name: "Lina", age: "3–5" },
-        ],
-        bluetooth: true,
-        address: { line1: "14 Cedar Walk", city: "London", country: "United Kingdom", postcode: "N1 7GU" },
-        deviceStage: 2, // 0 preparing, 1 shipped, 2 delivered
-        signupAt,
-      };
-      CurioStore.saveUser(user);
-    }
-    CurioStore.startSession(email);
-    return user;
+  // Shared lead-form wiring: validates [data-required] fields, saves the
+  // lead, then swaps the form for its confirmation block.
+  bindLeadForm(formId, type, confirmId) {
+    const form = document.getElementById(formId);
+    if (!form) return;
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      let ok = true;
+      const data = { type };
+      form.querySelectorAll("input, select, textarea").forEach((el) => {
+        const field = el.closest(".field");
+        const required = el.hasAttribute("data-required");
+        let valid = !required || el.value.trim().length > 0;
+        if (valid && el.type === "email" && el.value.trim()) {
+          valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim());
+        }
+        if (field) field.classList.toggle("error", !valid);
+        ok = ok && valid;
+        if (el.name) data[el.name] = el.value.trim();
+      });
+      if (!ok) return;
+      RihlaStore.saveLead(data);
+      form.style.display = "none";
+      const conf = document.getElementById(confirmId);
+      if (conf) conf.style.display = "block";
+      window.scrollTo({ top: conf ? conf.offsetTop - 120 : 0, behavior: "smooth" });
+    });
   },
 };
 
-document.addEventListener("DOMContentLoaded", () => CurioUI.initNav());
+document.addEventListener("DOMContentLoaded", () => RihlaUI.initNav());

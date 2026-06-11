@@ -1,10 +1,12 @@
 /* ============================================================
-   Curio — Experiential learning, beamed home.
-   Design system: warm neutrals, calm luxury, mobile-first.
+   Rihla — Journeys for those who cannot travel.
+   Design system: warm neutrals, palm green & gold, calm luxury,
+   mobile-first. (Accent vars keep legacy names: clay = primary
+   palm green, sage = secondary gold.)
    ============================================================ */
 
 :root {
-  /* Palette — warm neutral, low-stimulation for kids & parents */
+  /* Palette — warm neutral, clinical-calm, GCC luxury */
   --cream:   #FAF6EF;
   --paper:   #FFFDF8;
   --sand:    #F1EADD;
@@ -12,11 +14,11 @@
   --ink:     #2A2520;
   --ink-soft:#4A4239;
   --stone:   #847A6C;
-  --clay:    #B96F4B;   /* primary accent — muted terracotta */
-  --clay-deep:#9C5836;
-  --sage:    #75835F;   /* secondary accent — muted sage */
-  --sage-soft:#E9EDE2;
-  --clay-soft:#F4E4D9;
+  --clay:    #2E5E4E;   /* primary accent — deep palm green */
+  --clay-deep:#1F463A;
+  --sage:    #A8853B;   /* secondary accent — warm gold */
+  --sage-soft:#F2E9D5;
+  --clay-soft:#E2ECE6;
   --gold:    #A98B4F;
 
   --radius-lg: 28px;
@@ -242,6 +244,25 @@ p  { margin: 0 0 1em; }
 .float-card strong { display: block; font-size: .95rem; }
 .float-1 { top: -18px; right: -8px; }
 .float-2 { bottom: -22px; left: -10px; }
+
+.logo .ar {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--stone);
+  font-weight: 400;
+}
+
+/* Reverence / disclaimer notice */
+.notice-box {
+  background: var(--sage-soft);
+  border: 1px solid rgba(168, 133, 59, .45);
+  border-radius: var(--radius-md);
+  padding: 18px 22px;
+  color: #6B5320;
+  font-size: .95rem;
+  line-height: 1.6;
+}
+.notice-box strong { display: block; margin-bottom: 4px; }
 
 /* ---------- Sections ---------- */
 .section { padding: clamp(56px, 8vw, 110px) 0; }
@@ -551,7 +572,7 @@ p  { margin: 0 0 1em; }
 }
 .alert.show { display: block; }
 .alert-error { background: #F7E3DD; color: #8C3520; }
-.alert-ok { background: var(--sage-soft); color: #41502F; }
+.alert-ok { background: var(--sage-soft); color: #6B5320; }
 
 /* ---------- Signup wizard ---------- */
 .wizard-shell {
@@ -596,7 +617,7 @@ p  { margin: 0 0 1em; }
 .option-sub { font-size: .9rem; color: var(--stone); margin-top: 4px; }
 .mini-badge {
   font-size: .68rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
-  background: var(--sage-soft); color: #41502F;
+  background: var(--sage-soft); color: #6B5320;
   padding: 4px 10px; border-radius: 999px;
 }
 
@@ -653,7 +674,7 @@ p  { margin: 0 0 1em; }
 .sum-total { display: flex; justify-content: space-between; font-weight: 700; font-size: 1.05rem; padding-top: 14px; margin-top: 6px; border-top: 1.5px solid var(--linen); }
 .free-banner {
   background: var(--sage-soft);
-  color: #41502F;
+  color: #6B5320;
   font-size: .85rem;
   font-weight: 600;
   border-radius: var(--radius-sm);

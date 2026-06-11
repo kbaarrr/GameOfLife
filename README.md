@@ -1,48 +1,50 @@
-# Curio — experiential learning, beamed home
+# Rihla (رحلة) — journeys for those who cannot travel
 
-A premium, Whoop-style annual membership that streams live experiential and
-cultural learning studios to family TVs worldwide. Built by nursery educators,
-designed for calm: warm neutral palette, no noise, no clutter.
+Experience care for the Gulf: facilitated immersive journeys delivered to
+hospital wards and bedsides — one last skydive, the Haram at dawn, the street
+they grew up on. One brand, two doors:
 
-## The service
+- **For hospitals & care providers (B2B)** — ward experience-care programs:
+  headset kits maintained by Rihla, facilitator training, a growing journey
+  library, and quarterly reporting mapped to patient-satisfaction KPIs
+  (Saudi HSTP targets 85.76% inpatient satisfaction). Entry point is a
+  4-week ward pilot with pre/post measurement.
+- **For families (B2C wedge)** — white-glove bedside sessions: sacred
+  journeys to Makkah/Madinah (always framed as comfort and preparation,
+  never a substitute for pilgrimage), bucket-list moments, and bespoke 360°
+  memory films. Packages from a single Comfort Session to commissioned films.
 
-- **Two daily studio windows** — Morning Studio 8am–12pm and Afternoon Studio
-  2pm–6pm (local time). No booking; children pop in and out freely. Each hour
-  rotates to a new activity drawn from the family's chosen tracks.
-- **Global learning tracks** — pick up to 3 of 12 tracks across languages &
-  culture (Arabic & Gulf Culture, Japanese, Mandarin, French, Spanish), science,
-  making, food and the arts. Swap any time.
-- **Hardware included, Whoop-style** — the Curio Cam 4K + HDMI kit ships free
-  worldwide and remains Curio property: free replacement while a member,
-  prepaid return within 30 days if membership ends ($250 fee if unreturned).
-- **Optional Wireless Bluetooth Kit** — $100 one-time, fully cable-free.
-- **Pricing** — Annual $59/mo (billed $708/yr) or 24-Month $49/mo (billed
-  $1,176/2yr). **First month free**, no payment taken at signup.
+The clinical case rests on real evidence (VR distraction meta-analyses
+across 9 RCTs / 944 children; hospital feasibility studies) — cited with
+links on the hospitals page.
 
 ## The site
 
 Zero-dependency static site — deploy the repo root to any static host
-(GitHub Pages, Netlify, S3). Mobile-first, responsive, accessible.
+(GitHub Pages, Netlify, S3). Mobile-first, responsive, warm-neutral
+palm-green & gold design system.
 
 | Page | Purpose |
 |---|---|
-| `index.html` | Landing: hero, how it works, daily rhythm, kit, pricing, FAQ |
-| `tracks.html` | Track catalog with category/age filters and search |
-| `signup.html` | 6-step wizard: plan → tracks → children → device → delivery → account |
-| `login.html` | Member sign-in, plus a one-click demo dashboard |
-| `dashboard.html` | My Studio: live session status, agendas, track swap, kit tracking, billing |
+| `index.html` | Dual-door landing: mission, how a session works, evidence, library preview, trust |
+| `hospitals.html` | B2B: why wards buy, cited evidence, program tiers, pilot timeline, pilot-request form |
+| `families.html` | Sacred & memory service, religious framing, packages, booking form |
+| `experiences.html` | Journey library with category filters and search |
 
-State persists in `localStorage` behind the `CurioStore` facade
-(`assets/js/app.js`); replacing its methods with API calls is the entire
-backend migration. The catalog and service config live in `assets/js/data.js`.
+Lead capture (pilot requests, family bookings) persists in `localStorage`
+behind the `RihlaStore` facade (`assets/js/app.js`); replacing its methods
+with API calls is the entire backend migration. The journey catalog, program
+tiers, packages and evidence citations live in `assets/js/data.js`.
 
 ## Run & test
 
 ```bash
 npm start                  # serve locally at http://localhost:3000
-npm install && npm test    # jsdom functional suite: full signup→login→dashboard journey
+npm install && npm test    # jsdom functional suite: pages, filters, both lead forms
 ```
 
 ---
 
-The original Game of Life experiment lives on in `GOL/`.
+History: this repo previously hosted "Curio", a kids' experiential-learning
+subscription prototype (see git history), pivoted to Rihla after an
+investor-style review. The original Game of Life experiment lives on in `GOL/`.
