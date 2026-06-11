@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Learning Tracks — Curio</title>
+  <meta name="description" content="Browse Curio's global learning tracks — from Arabic & Gulf Culture to Kitchen Chemistry. Pick up to three, swap any time." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='42' fill='%23B96F4B'/></svg>" />
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav">
+    <a class="logo" href="index.html"><span class="dot"></span>Curio</a>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html#how">How it works</a>
+      <a href="tracks.html">Learning tracks</a>
+      <a href="index.html#device">The kit</a>
+      <a href="index.html#pricing">Membership</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn btn-ghost btn-sm" href="login.html" data-auth-link>Sign in</a>
+      <a class="btn btn-accent btn-sm" href="signup.html">Start free month</a>
+      <button class="nav-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <section class="section" style="padding-bottom: 24px;">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Learning tracks</span>
+        <h1 style="font-size: clamp(2rem, 5vw, 3.2rem);">Pick the world your child grows up in</h1>
+        <p class="muted">Twelve live tracks taught by educators across the globe. Choose up to three with your membership — and swap whenever curiosity changes direction.</p>
+      </div>
+
+      <div class="filter-bar" id="categoryBar"></div>
+      <div class="filter-bar" style="margin-top: -18px;">
+        <span class="muted" style="font-size:.85rem; font-weight:600;">Age:</span>
+        <div id="ageBar" style="display:flex; gap:10px; flex-wrap:wrap;"></div>
+        <input class="search-input" id="trackSearch" type="search" placeholder="Search tracks… e.g. Arabic, chemistry" />
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-bottom: 80px;">
+    <div class="wrap">
+      <div class="track-grid" id="trackGrid"></div>
+      <p class="center muted" id="noResults" style="display:none; padding: 48px 0;">No tracks match — try clearing a filter.</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: 0;">
+    <div class="wrap">
+      <div class="cta-band">
+        <h2>Found their next obsession?</h2>
+        <p class="muted">Every membership starts with a free month and a free home kit.</p>
+        <a class="btn btn-accent" href="signup.html" style="margin-top: 10px;">Start your free month</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-bottom" style="border-top: none; padding-top: 0;">
+      <span>© 2026 Curio Learning Ltd.</span>
+      <span><a href="index.html" style="color:inherit;">Home</a> · <a href="index.html#pricing" style="color:inherit;">Membership</a> · <a href="login.html" style="color:inherit;">Sign in</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+(function () {
+  let activeCategory = "All";
+  let activeAge = "All";
+  let query = "";
+
+  const catBar = document.getElementById("categoryBar");
+  const ageBar = document.getElementById("ageBar");
+  const grid = document.getElementById("trackGrid");
+  const noResults = document.getElementById("noResults");
+
+  function chip(label, isActive, onClick) {
+    const b = document.createElement("button");
+    b.className = "chip" + (isActive ? " active" : "");
+    b.textContent = label;
+    b.addEventListener("click", onClick);
+    return b;
+  }
+
+  function renderFilters() {
+    catBar.innerHTML = "";
+    ["All", ...CURIO.categories].forEach((c) =>
+      catBar.appendChild(chip(c, c === activeCategory, () => { activeCategory = c; renderAll(); }))
+    );
+    ageBar.innerHTML = "";
+    ["All", ...CURIO.ageBands].forEach((a) =>
+      ageBar.appendChild(chip(a, a === activeAge, () => { activeAge = a; renderAll(); }))
+    );
+  }
+
+  function renderGrid() {
+    const q = query.trim().toLowerCase();
+    const matches = CURIO.tracks.filter((t) => {
+      if (activeCategory !== "All" && t.category !== activeCategory) return false;
+      if (activeAge !== "All" && !t.ages.includes(activeAge)) return false;
+      if (q && !(t.name + " " + t.blurb + " " + t.region + " " + t.category).toLowerCase().includes(q)) return false;
+      return true;
+    });
+
+    noResults.style.display = matches.length ? "none" : "block";
+    grid.innerHTML = matches.map((t) => `
+      <article class="track-card">
+        <div class="track-banner ${t.tone === "sage" ? "sage" : ""}">${t.emoji}</div>
+        <div class="track-body">
+          <div class="track-meta">
+            <span class="tag clay">${CurioUI.esc(t.category)}</span>
+            <span class="tag">Ages ${t.ages.join(" · ")}</span>
+            <span class="tag">${CurioUI.esc(t.region)}</span>
+          </div>
+          <h3>${CurioUI.esc(t.name)}</h3>
+          <p>${CurioUI.esc(t.blurb)}</p>
+          <div style="margin-top:10px;">
+            <div class="step-label" style="font-size:.7rem;">Sample sessions</div>
+            <ul style="margin:0; padding-left:18px; font-size:.86rem; color:var(--ink-soft);">
+              ${t.sample.slice(0, 3).map((s) => `<li>${CurioUI.esc(s)}</li>`).join("")}
+            </ul>
+          </div>
+          <div class="track-foot"><a class="btn btn-ghost btn-sm" href="signup.html?track=${t.id}">Start with this track</a></div>
+        </div>
+      </article>`).join("");
+  }
+
+  function renderAll() { renderFilters(); renderGrid(); }
+
+  document.getElementById("trackSearch").addEventListener("input", (e) => {
+    query = e.target.value;
+    renderGrid();
+  });
+
+  renderAll();
+})();
+</script>
+</body>
+</html>
